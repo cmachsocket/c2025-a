@@ -21,15 +21,25 @@ int size(struct stack * s){
 }
 void dfs(){
     if(size(&st[3])==n){
+        for(int i=1;i<=tot;i++){
+            printf("%c -> %c\n",pt[fr[i]],pt[to[i]]);
+        }
         return ;
     }
+    for(int i=1;i<=tot;i++){
+        printf("%c -> %c\n",pt[fr[i]],pt[to[i]]);
+    }
+    puts("FFF");
     for(int i=1;i<=2;i++){
         for(int j=i+1;j<=3;j++){
             if(top(&st[i])<top(&st[j])){
                 ++tot;
                 fr[tot]=i,to[tot]=j;
-                push(top(&st[i]));
+                push(&st[j],top(&st[i]));
+                pop(&st[i]);
                 dfs();
+                push(&st[i],top(&st[j]));
+                pop(&st[j]);
                 tot--;
             }
         }
@@ -44,8 +54,6 @@ int main() {
     for(int i=1;i<=3;i++)st[i].st[0]=MAXN;
     for(int i=n;i>=1;i--)push(&st[1],i);
     dfs();
-    for(int i=1;i<=tot;i++){
-        printf("%c -> %c\n",pt[fr[i]],pt[to[i]]);
-    }
+
     return 0;
 }
