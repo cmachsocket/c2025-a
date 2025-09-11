@@ -16,7 +16,7 @@ int main() {
     int position = 0, tmp;
     output_whole_list();
     for (int i = 1; i <= 2; i++) {
-        if ((tmp = Find_value(&iterator, 5)) != -1) {
+        if ((tmp = Find_value(&iterator, 5)) != NOT_FIND_ERROR) {
             position += tmp;
             printf("the positon of number 5:%d\n", position);
         }
