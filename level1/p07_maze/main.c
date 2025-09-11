@@ -17,7 +17,7 @@
 #define RIGHT 3
 #define UP 2
 #define DOWN 1
-char map[MAX_COL+1][MAX_ROW+1];
+
 typedef struct Node {
   int x,y;
 }Node;
@@ -39,11 +39,12 @@ int is_outlet(Node pos_now) {
     return (pos_now.x==MAX_ROW && pos_now.y==MAX_COL);
 }
 
-Node queue[MAX_QUEUE];
-int head=1,tail=1;
-int visited[MAX_COL+1][MAX_ROW+1];
-int step_x[MAX_DIRECTION+1]={0,1,-1,0, 0};
-int step_y[MAX_DIRECTION+1]={0,0, 0,1,-1};
+static char map[MAX_COL+1][MAX_ROW+1];
+static Node queue[MAX_QUEUE];
+static int queue_head=1,queue_tail=1;
+static int visited[MAX_COL+1][MAX_ROW+1];
+static int step_x[MAX_DIRECTION+1]={0,1,-1,0, 0};
+static int step_y[MAX_DIRECTION+1]={0,0, 0,1,-1};
 int is_obstacle() {
     return !(rand()%RATE);
 }
@@ -74,10 +75,10 @@ int bfs_checker_valid() {
     memset(queue,0,sizeof(queue));
     Node now;
     now.x=1,now.y=1;
-    queue[tail++]=now;
+    queue[queue_tail++]=now;
     visited[now.x][now.y]=1;
-    while (head != tail) {
-        now=queue[head++];
+    while (queue_head != queue_tail) {
+        now=queue[queue_head++];
         if (is_outlet(now)) {
             return 1;
         }
@@ -86,7 +87,7 @@ int bfs_checker_valid() {
             if (is_inmap(tmp_x,tmp_y)
                 && !visited[tmp_x][tmp_y]
                 && is_access(now.x + step_x[i], now.y + step_y[i])) {
-                queue[tail++]=(Node){tmp_x,tmp_y};
+                queue[queue_tail++]=(Node){tmp_x,tmp_y};
                 visited[tmp_x][tmp_y]=1;
             }
         }
