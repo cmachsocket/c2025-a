@@ -62,11 +62,11 @@ void make_map() {
             }
         }
     }
-    map[1][1]=' ';//单独处理起点
+    map[1][1]=EMPTY_POS;//单独处理起点
 }
 
 int is_access(int x,int y) {
-    return map[x][y] == ' ';
+    return map[x][y] == EMPTY_POS;
 }
 
 //c没有bool！！！
