@@ -10,9 +10,11 @@
 #define MAX_QUEUE 1000000
 #define RATE 2
 #define MAX_DIRECTION 4
+
 #define OBSTACLE '#'
 #define EMPTY_POS ' '
 #define MY_CHARACTER '*'
+
 #define LEFT 4
 #define RIGHT 3
 #define UP 2
@@ -21,6 +23,10 @@
 typedef struct Node {
   int x,y;
 }Node;
+
+static char map[MAX_COL+1][MAX_ROW+1];
+static int step_x[MAX_DIRECTION+1]={0,1,-1,0, 0};
+static int step_y[MAX_DIRECTION+1]={0,0, 0,1,-1};
 
 void set_input_mode() {
     struct termios tattr;
@@ -39,12 +45,6 @@ int is_outlet(Node pos_now) {
     return (pos_now.x==MAX_ROW && pos_now.y==MAX_COL);
 }
 
-static char map[MAX_COL+1][MAX_ROW+1];
-static Node queue[MAX_QUEUE];
-static int queue_head=1,queue_tail=1;
-static int visited[MAX_COL+1][MAX_ROW+1];
-static int step_x[MAX_DIRECTION+1]={0,1,-1,0, 0};
-static int step_y[MAX_DIRECTION+1]={0,0, 0,1,-1};
 int is_obstacle() {
     return !(rand()%RATE);
 }
@@ -71,7 +71,9 @@ int is_access(int x,int y) {
 
 //c没有bool！！！
 int bfs_checker_valid() {
-    memset(visited,0,sizeof(visited));
+    Node queue[MAX_QUEUE];
+    int queue_head=1,queue_tail=1;
+    int visited[MAX_COL+1][MAX_ROW+1] = {0};
     memset(queue,0,sizeof(queue));
     Node now;
     now.x=1,now.y=1;
@@ -95,6 +97,7 @@ int bfs_checker_valid() {
     return 0;
 }
 void put_now_map(Node pos) {
+    system("clear");
     for (int i=1;i<+MAX_COL;i++) {
         putchar('_');
     }//围墙
@@ -125,6 +128,9 @@ void input_direction(int *direct) {
     else if (*direct=='d') {
         *direct=RIGHT;
     }
+    else {
+        *direct=0;
+    }
 }
 int main() {
     srand(time(NULL));
@@ -136,7 +142,6 @@ int main() {
     position.x=1,position.y=1;
     int direction;
     while (!is_outlet(position)) {
-        system("clear");
         put_now_map(position);
         input_direction(&direction);
         int tmp_x=position.x+step_x[direction],tmp_y=position.y+step_y[direction];
@@ -147,6 +152,7 @@ int main() {
         }
 
     }
+
     put_now_map(position);
     puts("YOU WIN!");
     return 0;
