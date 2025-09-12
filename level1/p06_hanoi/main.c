@@ -1,4 +1,3 @@
-#include <endian.h>
 #include <stdio.h>
 #define MAX_PILLAR 3
 #define MAX_STEP 10000000
