@@ -14,19 +14,21 @@
 #define OBSTACLE '#'
 #define EMPTY_POS ' '
 #define MY_CHARACTER '*'
+#define OUTLET 'X'
 
 #define LEFT 4
 #define RIGHT 3
 #define UP 2
 #define DOWN 1
+#define NOTING 0
 
 typedef struct Node {
   int x,y;
 }Node;
 
 static char map[MAX_COL+1][MAX_ROW+1];
-static int step_x[MAX_DIRECTION+1]={0,1,-1,0, 0};
-static int step_y[MAX_DIRECTION+1]={0,0, 0,1,-1};
+const int step_x[MAX_DIRECTION+1]={0,1,-1,0, 0};
+const int step_y[MAX_DIRECTION+1]={0,0, 0,1,-1};
 
 void set_input_mode() {
     struct termios tattr;
@@ -98,7 +100,7 @@ int bfs_checker_valid() {
 }
 void put_now_map(Node pos) {
     system("clear");
-    for (int i=1;i<+MAX_COL;i++) {
+    for (int i=1;i<=MAX_COL;i++) {
         putchar('_');
     }//围墙
     puts("");
@@ -107,12 +109,16 @@ void put_now_map(Node pos) {
             if (pos.x==i && pos.y==j) {
                 putchar(MY_CHARACTER);
             }
+            else if (i==MAX_ROW && j==MAX_COL) {
+                putchar(OUTLET);
+            }
             else {
                 putchar(map[i][j]);
             }
         }
         puts("|");//围墙
     }
+    puts("# 和 | : 障碍 ，* : 角色 ，X : 出口");//引导
 }
 void input_direction(int *direct) {
     *direct=getchar();
@@ -129,7 +135,7 @@ void input_direction(int *direct) {
         *direct=RIGHT;
     }
     else {
-        *direct=0;
+        *direct=NOTING;
     }
 }
 int main() {

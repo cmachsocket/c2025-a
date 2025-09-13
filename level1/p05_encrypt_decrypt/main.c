@@ -1,65 +1,61 @@
 //对称密码,强度弱爆了，update:支持所有格式
 #include <stdio.h>
 #include<string.h>
-#define MAXN 114514
-char enp[10]={'!','@','#','$','%','^','&','*','(',')'};
-char s1[MAXN],s2[MAXN];
-int opt;
-void enc(char s[],char * p){
-    int len=strlen(s);
-    //printf("%d\n",len);
+#define MAX_LEN 114514
+#define MAX_ACSII 256
+#define MAX_UTF8 3
+#define MOD 10
+const char encrypt_char[MOD]={'!','@','#','$','%','^','&','*','(',')'};
+void encrypt(const char source[],char * destination){
+    int len=strlen(source);
     for(int i=0;i<len;i++){
-        int tmp=s[i]+256;
-        //printf("%d 1\n",tmp);
+        int tmp=source[i]+MAX_ACSII;
+        for(int j=0;j<MAX_UTF8;j++){
 
-        for(int j=0;j<3;j++){
-
-            *p=enp[tmp%10];
-            p++;
-            tmp/=10;
+            *destination=encrypt_char[tmp%MOD];
+            destination++;
+            tmp/=MOD;
         }
     }
 }
-void dec(char s[],char * p){
-    int len=strlen(s);
+
+void decry_single(const char source[], int i, int *tmp_char,int seek) {
+    for(int k=0;k<MOD;k++){
+        //正向编码，反向解码
+        if(encrypt_char[k]==source[i+seek]){
+            *tmp_char+=k;
+            break;
+        }
+    }
+}
+
+void deccrypt(const char source[],char * destination){
+    int len=strlen(source);
     for(int i=0;i<len;i+=3){
-        int tmp=0;
-        for(int k=0;k<10;k++){
-            if(enp[k]==s[i+2]){
-                tmp+=k;
-                break;
+        int tmp_char=0;
+        for (int seek=MAX_UTF8-1;seek>=0;seek--) {
+            decry_single(source, i, &tmp_char,seek);
+            if (tmp_char) {
+                tmp_char*=10;//挪至高位
             }
         }
-        tmp*=10;
-        for(int k=0;k<10;k++){
-            if(enp[k]==s[i+1]){
-                tmp+=k;
-                break;
-            }
-        }
-        tmp*=10;
-        for(int k=0;k<10;k++){
-            if(enp[k]==s[i]){
-                tmp+=k;
-                break;
-            }
-        }
-        //printf("%d 2\n",tmp);
-        tmp-=256;
-        (*p)=tmp;
-        p++;
+        tmp_char-=MAX_ACSII;
+        (*destination)=(char)tmp_char;
+        destination++;
     }
 }
 int main() {
+    char string_start[MAX_LEN],string_end[MAX_LEN];
+    int opt;
     printf("1.加密 2.解密\n");
     scanf("%d",&opt);
-    scanf("%s",s1);
+    scanf("%s",string_start);
     if(opt&1){
-        enc(s1,s2);
+        encrypt(string_start,string_end);
     }
     else{
-        dec(s1,s2);
+        deccrypt(string_start,string_end);
     }
-    puts(s2);
+    puts(string_end);
     return 0;
 }

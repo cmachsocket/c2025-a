@@ -1,19 +1,24 @@
 #include <stdio.h>
 #define MAXN 10000005
-int pr[MAXN],tot,nopr[MAXN],n;
-void oula(){
-    for(int i=2;i<=MAXN;i++){
-        if(!nopr[i])pr[++tot]=i;
-        for(int j=1;j<=tot && i*pr[j]<=MAXN;j++){
-            nopr[i*pr[j]]=1;
-            if(!(i%pr[j]))break;
+static int prime[MAXN],total,not_prime[MAXN];
+void oula_sifter(){
+    for(int i=2;i<MAXN;i++){
+        if(!not_prime[i]) {
+            prime[++total]=i;
+        };
+        for(int j=1;j<=total && i*prime[j]<MAXN;j++){
+            not_prime[i*prime[j]]=1;
+            if(!(i%prime[j])) {
+                break;//欧拉筛法最关键的一步：保证是最小的质数筛掉这个合数
+            }
         }
     }
 }
 int main() {
-    oula();
+    int n;
+    oula_sifter();
     scanf("%d",&n);
-    printf(nopr[n]?"不是":"是");
+    printf(not_prime[n]?"不是":"是");
     printf("质数\n");
     return 0;
 }

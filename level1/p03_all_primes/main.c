@@ -1,26 +1,30 @@
-//需要用宏来支持跨平台毫秒时间查询。这里懒了,CPU快了就是0
+//需要用宏来支持跨平台毫秒时间查询。这里懒了；因为时间复杂度很低O（n）,CPU快了就是0
 #include <stdio.h>
 #include <time.h>
 #define MAXN 10000005
-int pr[MAXN],tot,nopr[MAXN],n;
-void oula(){
-    for(int i=2;i<=MAXN;i++){
-        if(!nopr[i])pr[++tot]=i;
-        for(int j=1;j<=tot && i*pr[j]<=MAXN;j++){
-            nopr[i*pr[j]]=1;
-            if(!(i%pr[j]))break;
+static int prime[MAXN],not_prime[MAXN],total;
+void oula_sifter(){
+    for(int i=2;i<MAXN;i++){
+        if(!not_prime[i]) {
+            prime[++total]=i;
+        };
+        for(int j=1;j<=total && i*prime[j]<MAXN;j++){
+            not_prime[i*prime[j]]=1;
+            if(!(i%prime[j])) {
+                break;//欧拉筛法最关键的一步：保证是最小的质数筛掉这个合数
+            }
         }
     }
 }
 int main() {
-    oula();
-    int set1=0,set2=0;
-    time_t timep1,timep2;
-    set1=time(&timep1);
+    int start_time_int=0,start_time_end=0,n;
+    time_t start_time,end_time;
+    start_time_int=time(&start_time);
+    oula_sifter();
     for(int i=2;i<=1000;i++){
-        if(!nopr[i])printf("%d ",i);
+        if(!not_prime[i])printf("%d ",i);
     }
-    set2=time(&timep2);
-    printf("\ntotal time:%d\n",set2-set1);
+    start_time_end=time(&end_time);
+    printf("\ntotal time:%d\n",start_time_end-start_time_int);
     return 0;
 }
